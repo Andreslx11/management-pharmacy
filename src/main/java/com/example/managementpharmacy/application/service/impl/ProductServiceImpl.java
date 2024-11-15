@@ -5,6 +5,7 @@ import com.example.managementpharmacy.application.dto.product.*;
 import com.example.managementpharmacy.application.mapper.ProductMapper;
 import com.example.managementpharmacy.application.service.ProductService;
 import com.example.managementpharmacy.persistence.entity.Product;
+import com.example.managementpharmacy.persistence.entity.Supplier;
 import com.example.managementpharmacy.persistence.enums.sortfield.ProductSortField;
 import com.example.managementpharmacy.persistence.repository.ProductRepository;
 import com.example.managementpharmacy.persistence.repository.SupplierRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 import static com.example.managementpharmacy.shared.util.DateHelper.localDateToString;
@@ -54,15 +56,13 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
 
     @Override
     public ProductDto findById(Long id) throws DataNotFoundException {
-        return productRepository.findById(id)
-                .map(productMapper::toDto)
-                .orElseThrow(()-> productDataNotFoundException(id));
+        return productMapper.toDto(getProductById(id));
     }
 
-    
+
     @Override
     public ProductSavedDto create(ProductBodyDto productCreate) {
-        if(!supplierRepository.existsById(productCreate.getSupplierId())){
+        if (!supplierRepository.existsById(productCreate.getSupplierId())) {
             throw new DataNotFoundException("Supplier with ID " +
                     productCreate.getSupplierId() + " does not exist.");
         }
@@ -72,30 +72,41 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         return productMapper.toSaveDto(productRepository.save(product));
     }
 
+
     @Override
     public ProductSavedDto update(Long id, ProductBodyDto productBodyDto) throws DataNotFoundException {
-          Product product = productRepository.findById(id)
-                  .orElseThrow(() -> productDataNotFoundException(id));
+        // Find the product by ID
+        Product product = getProductById(id);
 
-          productMapper.updateEntity(product, productBodyDto);
-          product.setUpdateDate(LocalDate.now());
+        // If the DTO has a new `supplierId`, find and update the supplier
+        Optional.ofNullable(productBodyDto.getSupplierId())
+                .ifPresent(supplierId -> {
+                    Supplier supplier = supplierRepository.findById(supplierId)
+                            .orElseThrow(() -> new DataNotFoundException("Supplier not found with ID: " + supplierId));
+                    product.setSupplier(supplier);
+                });
 
+        // Map the other fields from the DTO to the existing product
+        productMapper.updateEntity(product, productBodyDto);
+
+        // Update the modification date
+        product.setUpdateDate(LocalDate.now());
+
+        // Save and return the updated product
+        return productMapper.toSaveDto(productRepository.save(product));
+    }
+
+
+    @Override
+    public ProductSavedDto disable(Long id) throws DataNotFoundException {
+        Product product = getProductById(id);
+        product.setState(State.DISABLED);
         return productMapper.toSaveDto(productRepository.save(product));
     }
 
     @Override
-    public ProductSavedDto disable(Long id) throws DataNotFoundException {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> productDataNotFoundException(id));
-
-        product.setState(State.DISABLED);
-
-        return  productMapper.toSaveDto(productRepository.save(product));
-    }
-
-    @Override
     public List<ProductSmallDto> findByState(String state) {
-        return  productRepository.findByState( state)
+        return productRepository.findByState(state)
                 .stream()
                 .map(productMapper::toSmallDto)
                 .toList();
@@ -103,7 +114,8 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
 
     @Override
     public List<ProductSmallDto> findByTradeName(String name) {
-        return productRepository.findByTradeName(name)
+        List<Product> products = productRepository.findByTradeName(name);
+        return products
                 .stream()
                 .map(productMapper::toSmallDto)
                 .toList();
@@ -111,7 +123,8 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
 
     @Override
     public List<ProductSmallDto> findAllByFilters(String name, String state) {
-        return productRepository.findAllByFilters(name, state)
+        List<Product> products = productRepository.findAllByFilters(name, state);
+        return products
                 .stream()
                 .map(productMapper::toSmallDto)
                 .toList();
@@ -119,40 +132,44 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
 
     @Override
     public PageResponse<ProductDto> findAllPaginated(int page, int size) {
-       // variables
+        // variables
         Pageable pageable = PageRequest.of(page - 1, size);
 
-       // process
-        Page<Product>productPage = productRepository.findAll(pageable);
+        // process
+        // Get the total number of pages available from the product repository
+        Page<Product> productPage = productRepository.findAll(pageable);
 
         // result
+        // Build and return the response with the product data
         return buildPageResponse(productPage, productMapper::toDto);
     }
 
     @Override
     public PageResponse<ProductDto> paginatedSearch(ProductFilterDto filter) {
         // variables
-         String column = ProductSortField.getSqlColumn(filter.getSortField());
-         Pageable pageable = buildPageable(filter, column);
+        String column = ProductSortField.getSqlColumn(filter.getSortField());
+        Pageable pageable = buildPageable(filter, column);
 
         // process
-        Page<Product>  productPage = productRepository.paginatedSearch(
+        Page<Product> productPage = productRepository.paginatedSearch(
                 filter.getTradeName(),
-                localDateToString(filter.getExpirationDateFrom()),
-                localDateToString(filter.getExpirationDateTo()),
+                filter.getExpirationDateFrom(),
+                filter.getExpirationDateTo(),
                 filter.getSalePriceFrom(),
                 filter.getSalePriceTo(),
                 filter.getState().getValue(),
                 pageable);
 
         // result
-        return buildPageResponse(productPage,  productMapper::toDto);
+        return buildPageResponse(productPage, productMapper::toDto);
     }
 
 
 
 
-    private static DataNotFoundException productDataNotFoundException(Long id) {
-        return new DataNotFoundException("Product not found:  " + id);
+    public Product getProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(()
+                                -> new DataNotFoundException("Product not found with ID: " + id));
     }
 }
