@@ -4,7 +4,6 @@ package com.example.managementpharmacy.application.mapper;
 import com.example.managementpharmacy.application.dto.product.*;
 import com.example.managementpharmacy.persistence.entity.Product;
 
-
 import org.mapstruct.*;
 
 // MapStruct annotations

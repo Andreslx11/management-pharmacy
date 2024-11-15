@@ -67,7 +67,6 @@ public class Product implements Serializable {
     private Supplier supplier;
 
 
-
     @Column(name = "creation_date")
     private LocalDate creationDate;
 
