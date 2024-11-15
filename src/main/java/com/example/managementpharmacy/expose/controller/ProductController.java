@@ -8,10 +8,12 @@ import com.example.managementpharmacy.shared.exception.model.ArgumentNotValidErr
 import com.example.managementpharmacy.shared.exception.model.GeneralError;
 import com.example.managementpharmacy.shared.page.PageResponse;
 import com.example.managementpharmacy.shared.state.enums.State;
+import com.example.managementpharmacy.shared.util.Create;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -94,7 +97,7 @@ public class ProductController {
 
             @NotNull(message = "Size is required")
             @Min(value = 1, message = "Size must be a number positive")
-            @RequestParam(name = "page", defaultValue = "10") int size
+            @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.findAllPaginated(page, size));
@@ -169,7 +172,7 @@ public class ProductController {
             )
     )
     @PostMapping
-    public ResponseEntity<ProductSavedDto> create(@Valid @RequestBody ProductBodyDto productBodyDto) {
+    public ResponseEntity<ProductSavedDto> create(@Valid @Validated(Create.class) @RequestBody ProductBodyDto productBodyDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.create(productBodyDto));
 
@@ -185,6 +188,7 @@ public class ProductController {
                     schema = @Schema(implementation = ArgumentNotValidError.class)
             )
     )
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<ProductSavedDto> update(
             @PathVariable("id") Long id,
