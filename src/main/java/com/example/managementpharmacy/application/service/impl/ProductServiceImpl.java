@@ -14,7 +14,6 @@ import com.example.managementpharmacy.shared.page.PageResponse;
 import com.example.managementpharmacy.shared.page.PagingAndSortingBuilder;
 import com.example.managementpharmacy.shared.state.enums.State;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
-import static com.example.managementpharmacy.shared.util.DateHelper.localDateToString;
-
+import static com.example.managementpharmacy.shared.util.StringHelper.buildSlugsKeywords;
 
 // Lombok annotation to generate constructors and inject IoC beans.
 @RequiredArgsConstructor
@@ -69,6 +66,7 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         Product product = productMapper.toEntity(productCreate);
         product.setCreationDate(LocalDate.now());
         product.setState(State.ENABLED);
+        product.setUrlkey(buildSlugsKeywords(product.getTradeName()));
         return productMapper.toSaveDto(productRepository.save(product));
     }
 
@@ -88,6 +86,8 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
 
         // Map the other fields from the DTO to the existing product
         productMapper.updateEntity(product, productBodyDto);
+
+        product.setUrlkey(buildSlugsKeywords(product.getTradeName()));
 
         // Update the modification date
         product.setUpdateDate(LocalDate.now());
