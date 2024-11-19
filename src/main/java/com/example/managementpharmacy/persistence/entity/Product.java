@@ -80,6 +80,9 @@ public class Product implements Serializable {
     private String description;
 
     private String contraindications;
+
+    @Column(name= "url_key")
+    private String urlkey;
 }
 
 

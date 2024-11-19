@@ -37,5 +37,6 @@ public class ProductDto {
     private State state;
     private String description;
     private String contraindications;
+    private String urlkey;
 
 }
