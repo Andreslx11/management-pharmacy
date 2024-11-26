@@ -28,7 +28,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByState(String state);
 
 
-    @Query(value = "SELECT p FROM Product p " +
+    @Query( "SELECT p FROM Product p " +
             "WHERE UPPER(p.tradeName) LIKE UPPER(CONCAT('%', :tradeName, '%')) " +
             "ORDER BY p.id DESC")
     List<Product> findByTradeName(@Param("tradeName") String tradeName);
@@ -40,10 +40,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByFilters(@Param("tradeName") String tradeName, @Param("state") String state);
 
 
+//
+
     @Query(value = "SELECT p.id_product, p.trade_name, p.generic_name, p.laboratory, " +
             "p.presentation, p.concentration, p.stock, p.sale_price, " +
             "p.expiration_date, p.category, p.invima_registration, p.description, " +
-            "p.contraindications, p.supplier_id, p.creation_date, p.update_date, p.state " +
+            "p.contraindications, p.supplier_id, p.creation_date, p.update_date, p.state, p.url_key " +
             "FROM products p " +
             "WHERE (:tradeName IS NULL OR UPPER(p.trade_name) LIKE UPPER(CONCAT('%', :tradeName, '%'))) " +
             "AND (:expirationDateFrom IS NULL OR p.expiration_date >= :expirationDateFrom) " +

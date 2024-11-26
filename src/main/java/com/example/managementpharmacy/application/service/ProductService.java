@@ -5,11 +5,11 @@ import com.example.managementpharmacy.shared.exception.DataNotFoundException;
 import com.example.managementpharmacy.shared.page.PageResponse;
 import java.util.List;
 
-// Esta interface es para cumplir el principio solid de inversion de dependencia
+// This interface is to comply with the solid principle of dependency inversion.
 
 public interface ProductService {
 
-    // CRUD principal
+    // CRUD
     List<ProductSmallDto> findAll();
 
     ProductDto findById(Long id)  throws DataNotFoundException;

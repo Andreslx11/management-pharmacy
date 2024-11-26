@@ -53,7 +53,7 @@ public class ProductController {
     @ApiResponse(responseCode = StatusCode.NOT_FOUND,
             description = "Product not found",
             content = @Content(
-                    mediaType = MediaType.APPLICATION_NDJSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = GeneralError.class)
             ))
     @GetMapping("/{id}")
@@ -70,7 +70,7 @@ public class ProductController {
                 .body(productService.findByState(state.getValue()));
     }
 
-    @ApiResponse(responseCode = StatusCode.OK, description = "Product by trade name trade")
+    @ApiResponse(responseCode = StatusCode.OK, description = "Product by trade name")
     @GetMapping("/trade-name/{tradeName}")
     public ResponseEntity<List<ProductSmallDto>> findByNameTrade(@PathVariable("tradeName") String tradeName) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -81,8 +81,8 @@ public class ProductController {
     @ApiResponse(responseCode = StatusCode.OK, description = "List of product by filters")
     @GetMapping("/filters")
     public ResponseEntity<List<ProductSmallDto>> findAllByFilters(
-            @RequestParam(value = "tradeName", required = false) String tradeName,
-            @RequestParam(value = "state", required = false) State state) {
+            @RequestParam(value = "trade_name", required = false) String tradeName,
+            @RequestParam(value = "state", defaultValue = "ENABLED", required = false ) State state) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.findAllByFilters(tradeName, state.getValue()));
 
@@ -116,16 +116,16 @@ public class ProductController {
             @Min(value = 1, message = "Size must be a number positive")
             @RequestParam(name = "size", defaultValue = "10") int size,
 
-            @RequestParam(value = "tradeName", required = false) String tradeName,
+            @RequestParam(value = "trade_name", required = false) String tradeName,
 
             @Parameter(description = "Filters products expiring after the specified date")
-            @RequestParam(value = "expirationDateFrom", required = false) LocalDate expirationDateFrom,
+            @RequestParam(value = "expiration_date_from", required = false) LocalDate expirationDateFrom,
 
             @Parameter(description = "Filter products up to a specific date")
-            @RequestParam(value = "expirationDateTo", required = false) LocalDate expirationDateTo,
+            @RequestParam(value = "expiration_date_to", required = false) LocalDate expirationDateTo,
 
-            @RequestParam(value = "salePriceFrom", required = false) BigDecimal salePriceFrom,
-            @RequestParam(value = "salePriceTo", required = false) BigDecimal salePriceTo,
+            @RequestParam(value = "sale_price_from", required = false) BigDecimal salePriceFrom,
+            @RequestParam(value = "sale_price_to", required = false) BigDecimal salePriceTo,
 
             @Parameter(description = "State must be 'ENABLED' or 'DISABLED' (default: 'ENABLED')")
             @RequestParam(value = "state", required = false, defaultValue = "ENABLED") State state,
@@ -134,12 +134,12 @@ public class ProductController {
                     " (default: 'id')")
             @Pattern(regexp = "^(id|tradeName|state|creationDate)$", message = "Sort field must be  'id'," +
                     " 'tradeName', 'state' or 'creationDate'")
-            @RequestParam(value = "sortField", required = false) String sortField,
+            @RequestParam(value = "sort_field", required = false) String sortField,
 
 
             @Parameter(description = "Sort order must be 'ASC' or 'DESC' (default: 'DESC'")
             @Pattern(regexp = "^(ASC|DESC)$", message = "Sort order must be 'ASC' or 'DESC' (default: 'DESC')")
-            @RequestParam(value = "sortOrder", required = false) String sortOrder
+            @RequestParam(value = "sort_order", required = false) String sortOrder
 
 
     ) {
@@ -167,7 +167,7 @@ public class ProductController {
             responseCode = StatusCode.BAD_REQUEST,
             description = "Invalid  data",
             content = @Content(
-                    mediaType = MediaType.APPLICATION_NDJSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ArgumentNotValidError.class)
             )
     )
@@ -184,7 +184,7 @@ public class ProductController {
             responseCode = StatusCode.NOT_FOUND,
             description = "Product not found",
             content = @Content(
-                    mediaType = MediaType.APPLICATION_NDJSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = ArgumentNotValidError.class)
             )
     )
@@ -204,7 +204,7 @@ public class ProductController {
             responseCode = StatusCode.NOT_FOUND,
             description = "Product not found",
             content = @Content(
-                    mediaType = MediaType.APPLICATION_NDJSON_VALUE,
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = GeneralError.class)
             ))
     @DeleteMapping("/{id}")
