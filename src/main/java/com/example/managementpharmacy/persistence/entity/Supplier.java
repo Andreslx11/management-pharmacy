@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +47,9 @@ public class Supplier implements Serializable {
 
     @Convert(converter = StateConverter.class)
     private State state;
+
+    @Column(name = "url_key")
+    private String urlkey;
 
     @OneToMany(mappedBy = "supplier")
     private List<Product> products = new ArrayList<>();
