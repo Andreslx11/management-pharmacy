@@ -20,5 +20,6 @@ public class SupplierDto {
     private LocalDate creationDate;
     private LocalDate updateDate;
     private State state;
+    private String urlkey;
 
 }
