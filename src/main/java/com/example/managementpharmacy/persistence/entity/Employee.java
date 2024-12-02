@@ -43,7 +43,7 @@ public class Employee implements Serializable {
     @Column(name = "update_date")
     private LocalDate updateDate;
 
-    //    @Enumerated(EnumType.STRING)
+
     @Convert(converter = StateConverter.class)
     private State state;
 
