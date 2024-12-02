@@ -36,10 +36,6 @@ public class Employee implements Serializable {
     @Enumerated(EnumType.STRING)
     private RolePharmacy rolePharmacy;
 
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
-
-    private String password;
 
     @Column(name = "creation_date")
     private LocalDate creationDate;
