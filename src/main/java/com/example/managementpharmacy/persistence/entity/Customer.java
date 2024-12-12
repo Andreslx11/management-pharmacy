@@ -31,7 +31,10 @@ public class Customer implements Serializable {
     @Column(name = "id_customer")
     private Long id;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
 
     @Enumerated(EnumType.STRING)
@@ -54,10 +57,8 @@ public class Customer implements Serializable {
     @Column(name = "update_date")
     private LocalDate updateDate;
 
-    //    @Enumerated(EnumType.STRING)
     @Convert(converter = StateConverter.class)
     private State state;
-
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders;
