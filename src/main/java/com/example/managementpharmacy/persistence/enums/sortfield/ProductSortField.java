@@ -21,7 +21,7 @@ public enum ProductSortField {
     private final String fieldName;
     private final String columnName;
 
-    public static  String getSqlColumn(String value){
+    public static String getSqlColumn(String value) {
         return Arrays.stream(ProductSortField.values())
                 .filter(sortField -> sortField.getFieldName().equals(value))
                 .findFirst()

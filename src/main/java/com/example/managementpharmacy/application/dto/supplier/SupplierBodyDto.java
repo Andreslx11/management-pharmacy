@@ -13,8 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 public class SupplierBodyDto {
 
-
-    @NotBlank(message="Company name is requred", groups = {Create.class})
+    @NotBlank(message="Company name is required", groups = {Create.class})
     @Size(min = 3, max = 100, message ="Company name must be between 3 and 100 characters")
     private String companyName;
 

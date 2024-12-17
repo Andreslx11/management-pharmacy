@@ -44,7 +44,6 @@ public class Supplier implements Serializable {
     @Column(name = "update_date")
     private LocalDate updateDate;
 
-
     @Convert(converter = StateConverter.class)
     private State state;
 

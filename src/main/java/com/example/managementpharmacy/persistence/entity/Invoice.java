@@ -6,12 +6,14 @@ import com.example.managementpharmacy.persistence.enums.entity.PaymentMethod;
 import com.example.managementpharmacy.shared.state.converter.StateConverter;
 import com.example.managementpharmacy.shared.state.enums.State;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 // Lombok
 @Setter
@@ -62,7 +64,6 @@ public class Invoice implements Serializable {
     @Column(name = "update_date")
     private LocalDate updateDate;
 
-//    @Enumerated(EnumType.STRING)
     @Convert(converter = StateConverter.class)
     private State state;
 }

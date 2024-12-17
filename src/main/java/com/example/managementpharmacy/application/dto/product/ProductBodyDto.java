@@ -3,7 +3,6 @@ package com.example.managementpharmacy.application.dto.product;
 import com.example.managementpharmacy.persistence.enums.entity.Category;
 import com.example.managementpharmacy.persistence.enums.entity.Concentration;
 import com.example.managementpharmacy.persistence.enums.entity.Presentation;
-
 import com.example.managementpharmacy.shared.util.Create;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -20,7 +19,6 @@ public class ProductBodyDto {
 
     // DTO  to create and update
 
-
     @NotBlank(message = "Trade name is required", groups = { Create.class})
     @Size(min = 3, max = 255, message = "Trade name must be between 3 and 255 characters")
     private String tradeName;
@@ -28,7 +26,7 @@ public class ProductBodyDto {
     private String genericName;
 
     @NotBlank(message = "Laboratory is required", groups = { Create.class})
-    @Size(min = 3, max = 225, message = "Laboratory must be between 3 and 255 characters")
+    @Size(min = 3, max = 255, message = "Laboratory must be between 3 and 255 characters")
     private String laboratory;
 
     @NotNull(message = "Presentation is required", groups = { Create.class})
@@ -52,7 +50,7 @@ public class ProductBodyDto {
     private Category category;
 
     @NotBlank(message = "Invima registration is required", groups = { Create.class})
-    @Size(min = 5, max = 225, message = "Invima registration must be between 5 and 255 characters")
+    @Size(min = 5, max = 255, message = "Invima registration must be between 5 and 255 characters")
     private String invimaRegistration;
 
     @NotNull(message = "Supplier ID is required", groups = { Create.class})

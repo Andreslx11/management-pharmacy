@@ -1,7 +1,6 @@
 package com.example.managementpharmacy.application.dto.product;
 
 
-import com.example.managementpharmacy.persistence.enums.entity.Category;
 import com.example.managementpharmacy.persistence.enums.entity.Concentration;
 import com.example.managementpharmacy.persistence.enums.entity.Presentation;
 import com.example.managementpharmacy.shared.state.enums.State;
@@ -29,7 +28,7 @@ public class ProductDto {
     private Integer stock;
     private BigDecimal salePrice;
     private String expirationDate;
-    private Category category;
+    private String category;
     private String invimaRegistration;
     private Long supplierId;
     private LocalDate creationDate;

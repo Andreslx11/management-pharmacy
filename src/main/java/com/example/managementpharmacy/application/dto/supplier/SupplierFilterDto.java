@@ -2,7 +2,10 @@ package com.example.managementpharmacy.application.dto.supplier;
 
 import com.example.managementpharmacy.shared.page.PageableRequest;
 import com.example.managementpharmacy.shared.state.enums.State;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 

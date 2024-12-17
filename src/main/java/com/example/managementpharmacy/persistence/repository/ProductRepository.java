@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,13 +21,12 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
-
     @Query("SELECT p FROM Product p WHERE UPPER(p.state)" +
             " = UPPER(:state) ORDER BY p.id DESC")
     List<Product> findByState(String state);
 
 
-    @Query( "SELECT p FROM Product p " +
+    @Query("SELECT p FROM Product p " +
             "WHERE UPPER(p.tradeName) LIKE UPPER(CONCAT('%', :tradeName, '%')) " +
             "ORDER BY p.id DESC")
     List<Product> findByTradeName(@Param("tradeName") String tradeName);
@@ -40,7 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByFilters(@Param("tradeName") String tradeName, @Param("state") String state);
 
 
-//
+
 
     @Query(value = "SELECT p.id_product, p.trade_name, p.generic_name, p.laboratory, " +
             "p.presentation, p.concentration, p.stock, p.sale_price, " +

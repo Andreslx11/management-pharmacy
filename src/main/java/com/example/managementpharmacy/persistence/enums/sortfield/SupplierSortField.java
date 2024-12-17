@@ -6,14 +6,12 @@ import lombok.Getter;
 import java.util.Arrays;
 
 
-
-
 @Getter
 @AllArgsConstructor
 public enum SupplierSortField {
 
     ID("id", "id_supplier"),
-    COMPANY_NAME("companyName", "company_name" ),
+    COMPANY_NAME("companyName", "company_name"),
     CONTACT("contact", "contact"),
     PHONE("phone", "phone"),
     STATE("state", "state");
@@ -22,7 +20,7 @@ public enum SupplierSortField {
     private final String columnName;
 
 
-    public  static String getSqlColumn(String value){
+    public static String getSqlColumn(String value) {
         return Arrays.stream(SupplierSortField.values())
                 .filter(sortFiel -> sortFiel.getFieldName().equals(value))
                 .findFirst()

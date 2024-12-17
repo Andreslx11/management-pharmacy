@@ -52,7 +52,7 @@ public class SupplierController {
             description = "Supplier not found",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema( implementation = GeneralError.class)
+                    schema = @Schema(implementation = GeneralError.class)
             ))
     @GetMapping(("/{id}"))
     public ResponseEntity<SupplierDto> findById(@PathVariable("id") Long id) throws DataNotFoundException {
@@ -62,24 +62,24 @@ public class SupplierController {
 
     @ApiResponse(responseCode = StatusCode.OK, description = "List of suppliers by state")
     @GetMapping("/state/{state}")
-    public ResponseEntity<List<SupplierSmallDto>>  findByState(@PathVariable("state") State state){
+    public ResponseEntity<List<SupplierSmallDto>> findByState(@PathVariable("state") State state) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.findByState(state.getValue()));
     }
 
-    @ApiResponse( responseCode = StatusCode.OK, description = "Supplier by company name")
+    @ApiResponse(responseCode = StatusCode.OK, description = "Supplier by company name")
     @GetMapping("/company-name/{companyName}")
-    public ResponseEntity<List<SupplierSmallDto>>  findByCompanyName(@PathVariable("companyName")
-                                                                      String companyName){
+    public ResponseEntity<List<SupplierSmallDto>> findByCompanyName(@PathVariable("companyName")
+                                                                    String companyName) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.findByName(companyName));
     }
 
     @ApiResponse(responseCode = StatusCode.OK, description = "List of supplier by filters")
     @GetMapping("/filters")
-    public ResponseEntity<List<SupplierSmallDto>>  findAllByfilters(
+    public ResponseEntity<List<SupplierSmallDto>> findAllByfilters(
             @RequestParam(value = "company_name", required = false) String companyName,
-            @RequestParam(value = "state", defaultValue = "ENABLED",required = false) State state){
+            @RequestParam(value = "state", defaultValue = "ENABLED", required = false) State state) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.findAllByFilters(companyName, state.getValue()));
 
@@ -87,15 +87,15 @@ public class SupplierController {
 
     @ApiResponse(responseCode = StatusCode.OK, description = "List of supplirs  paginated")
     @GetMapping("/paginated")
-    public  ResponseEntity<PageResponse<SupplierDto>> findAllPaginated(
-            @NotNull(message ="Page is required")
+    public ResponseEntity<PageResponse<SupplierDto>> findAllPaginated(
+            @NotNull(message = "Page is required")
             @Min(value = 1, message = "Page must be a number positive")
-            @RequestParam(name = "page",  defaultValue = "1") int page,
+            @RequestParam(name = "page", defaultValue = "1") int page,
 
             @NotNull(message = "Size is requerid")
-            @Min(value = 10, message ="Size must be a number positive")
-            @RequestParam(name = "size", defaultValue = "10")  int size
-    ){
+            @Min(value = 10, message = "Size must be a number positive")
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.findAllPaginated(page, size));
 
@@ -104,26 +104,26 @@ public class SupplierController {
     @ApiResponse(responseCode = StatusCode.OK, description = "List od suppliers paginated  by filters")
     @GetMapping("/paginated-search")
     public ResponseEntity<PageResponse<SupplierDto>> paginatedSearch(
-            @NotNull(message ="Page is required")
+            @NotNull(message = "Page is required")
             @Min(value = 1, message = "Page must be a number positive")
-            @RequestParam(name = "page",  defaultValue = "1") int page,
+            @RequestParam(name = "page", defaultValue = "1") int page,
 
             @NotNull(message = "Size is requerid")
-            @Min(value = 10, message ="Size must be a number positive")
-            @RequestParam(name = "size", defaultValue = "10")  int size,
+            @Min(value = 10, message = "Size must be a number positive")
+            @RequestParam(name = "size", defaultValue = "10") int size,
 
             @RequestParam(value = "company_name", required = false) String companyName,
 
-            @RequestParam(value= "contact", required = false) String contact,
+            @RequestParam(value = "contact", required = false) String contact,
 
-            @RequestParam(value="phone" , required = false) String phone,
+            @RequestParam(value = "phone", required = false) String phone,
 
-            @RequestParam(value="email" , required = false) String email,
+            @RequestParam(value = "email", required = false) String email,
 
-            @RequestParam(value="nit" , required = false) String nit,
+            @RequestParam(value = "nit", required = false) String nit,
 
             @Parameter(description = "State must be 'ENABLED' or 'DISABLED' (default: 'ENABLED')")
-            @RequestParam(value="state" , defaultValue = "ENABLED",required = false) State state,
+            @RequestParam(value = "state", defaultValue = "ENABLED", required = false) State state,
 
             @Parameter(description = "Filters suppliers created on or after the specified date")
             @RequestParam(value = "creation_date_from", required = false) LocalDate creationDateFrom,
@@ -134,14 +134,14 @@ public class SupplierController {
 
             @Parameter(description = "Sort field must be  'id', 'companyName', 'state' or 'creationDate' " +
                     " (default: 'id')  ")
-            @Pattern(regexp= "^(id|companyName|state|creationDate)$", message = "Sort field must be 'id'," +
+            @Pattern(regexp = "^(id|companyName|state|creationDate)$", message = "Sort field must be 'id'," +
                     " 'companyName', 'state' or 'creationDate' ")
-            @RequestParam(value ="sort_field", required = false) String sortField,
+            @RequestParam(value = "sort_field", required = false) String sortField,
 
             @Parameter(description = "Sort order must be 'ASC' or 'DESC' (default: 'DESC'")
             @Pattern(regexp = "^(ASC|DESC)$", message = "Sort order must be 'ASC' or 'DESC' (default: 'DESC')")
             @RequestParam(value = "sort_order", required = false) String sortOrder
-            ){
+    ) {
 
         SupplierFilterDto filter = SupplierFilterDto.builder()
                 .page(page)
@@ -175,7 +175,7 @@ public class SupplierController {
     @PostMapping
     public ResponseEntity<SupplierSavedDto> create(
             @Valid @Validated(Create.class) @RequestBody
-            SupplierBodyDto supplierBodyDto){
+            SupplierBodyDto supplierBodyDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(supplierService.create(supplierBodyDto));
     }
@@ -183,16 +183,16 @@ public class SupplierController {
     @ApiResponse(responseCode = StatusCode.OK, description = "Supplier updated")
     @ApiResponse(
             responseCode = StatusCode.NOT_FOUND,
-    description = "Supplier not found",
-    content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema= @Schema(implementation = ArgumentNotValidError.class)
-    ))
+            description = "Supplier not found",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ArgumentNotValidError.class)
+            ))
     @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<SupplierSavedDto> update(@PathVariable("id") Long id,
                                                    @Valid @RequestBody
-                                                   SupplierBodyDto supplierBodyDto) throws DataNotFoundException{
+                                                   SupplierBodyDto supplierBodyDto) throws DataNotFoundException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.update(id, supplierBodyDto));
 
@@ -201,13 +201,13 @@ public class SupplierController {
     @ApiResponse(responseCode = StatusCode.OK, description = "Supplier disabled")
     @ApiResponse(
             responseCode = StatusCode.NOT_FOUND,
-    description = "Supplier not found",
-    content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = GeneralError.class)
-    ))
+            description = "Supplier not found",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = GeneralError.class)
+            ))
     @DeleteMapping("/{id}")
-    public ResponseEntity<SupplierSavedDto> disabled(@PathVariable("id") Long id) throws DataNotFoundException{
+    public ResponseEntity<SupplierSavedDto> disabled(@PathVariable("id") Long id) throws DataNotFoundException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(supplierService.disable(id));
     }

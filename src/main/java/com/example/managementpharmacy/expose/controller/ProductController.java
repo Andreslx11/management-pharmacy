@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -82,7 +81,7 @@ public class ProductController {
     @GetMapping("/filters")
     public ResponseEntity<List<ProductSmallDto>> findAllByFilters(
             @RequestParam(value = "trade_name", required = false) String tradeName,
-            @RequestParam(value = "state", defaultValue = "ENABLED", required = false ) State state) {
+            @RequestParam(value = "state", defaultValue = "ENABLED", required = false) State state) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(productService.findAllByFilters(tradeName, state.getValue()));
 
@@ -172,7 +171,8 @@ public class ProductController {
             )
     )
     @PostMapping
-    public ResponseEntity<ProductSavedDto> create(@Valid @Validated(Create.class) @RequestBody ProductBodyDto productBodyDto) {
+    public ResponseEntity<ProductSavedDto> create(@Valid @Validated(Create.class)
+                                                  @RequestBody ProductBodyDto productBodyDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productService.create(productBodyDto));
 
@@ -188,7 +188,6 @@ public class ProductController {
                     schema = @Schema(implementation = ArgumentNotValidError.class)
             )
     )
-    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<ProductSavedDto> update(
             @PathVariable("id") Long id,

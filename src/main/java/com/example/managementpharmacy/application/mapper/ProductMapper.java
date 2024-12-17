@@ -1,9 +1,11 @@
 package com.example.managementpharmacy.application.mapper;
 
 
-import com.example.managementpharmacy.application.dto.product.*;
+import com.example.managementpharmacy.application.dto.product.ProductBodyDto;
+import com.example.managementpharmacy.application.dto.product.ProductDto;
+import com.example.managementpharmacy.application.dto.product.ProductSavedDto;
+import com.example.managementpharmacy.application.dto.product.ProductSmallDto;
 import com.example.managementpharmacy.persistence.entity.Product;
-
 import org.mapstruct.*;
 
 // MapStruct annotations

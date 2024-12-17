@@ -13,7 +13,7 @@ public interface SupplierService {
     // CRUD
     List<SupplierSmallDto> findAll();
 
-    SupplierDto  findById(Long id) throws DataNotFoundException;
+    SupplierDto findById(Long id) throws DataNotFoundException;
 
     SupplierSavedDto create(SupplierBodyDto supplierBodyDto);
 
@@ -22,11 +22,11 @@ public interface SupplierService {
     SupplierSavedDto disable(Long id) throws DataNotFoundException;
 
     //
-    List<SupplierSmallDto> findByState(String state);
+    List<SupplierSmallDto> findByState(String state) throws DataNotFoundException;
 
-    List<SupplierSmallDto> findByName(String name);
+    List<SupplierSmallDto> findByName(String name) throws DataNotFoundException;
 
-    List<SupplierSmallDto>  findAllByFilters(String state, String name);
+    List<SupplierSmallDto> findAllByFilters(String state, String name);
 
     PageResponse<SupplierDto> findAllPaginated(int page, int size);
 

@@ -13,6 +13,7 @@ import com.example.managementpharmacy.shared.exception.DataNotFoundException;
 import com.example.managementpharmacy.shared.page.PageResponse;
 import com.example.managementpharmacy.shared.page.PagingAndSortingBuilder;
 import com.example.managementpharmacy.shared.state.enums.State;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +57,7 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         return productMapper.toDto(getProductById(id));
     }
 
-
+    @Transactional
     @Override
     public ProductSavedDto create(ProductBodyDto productCreate) {
         if (!supplierRepository.existsById(productCreate.getSupplierId())) {
@@ -67,10 +68,10 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         product.setCreationDate(LocalDate.now());
         product.setState(State.ENABLED);
         product.setUrlkey(buildSlugsKeywords(product.getTradeName()));
-        return productMapper.toSaveDto(productRepository.save(product));
+        return saveAndMapSaveDto(product);
     }
 
-
+    @Transactional
     @Override
     public ProductSavedDto update(Long id, ProductBodyDto productBodyDto) throws DataNotFoundException {
         // Find the product by ID
@@ -93,15 +94,15 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         product.setUpdateDate(LocalDate.now());
 
         // Save and return the updated product
-        return productMapper.toSaveDto(productRepository.save(product));
+        return saveAndMapSaveDto(product);
     }
 
-
+    @Transactional
     @Override
     public ProductSavedDto disable(Long id) throws DataNotFoundException {
         Product product = getProductById(id);
         product.setState(State.DISABLED);
-        return productMapper.toSaveDto(productRepository.save(product));
+        return saveAndMapSaveDto(product);
     }
 
     @Override
@@ -164,12 +165,13 @@ public class ProductServiceImpl extends PagingAndSortingBuilder implements Produ
         return buildPageResponse(productPage, productMapper::toDto);
     }
 
-
-
-
-    public Product getProductById(Long id){
+    public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(()
-                                -> new DataNotFoundException("Product not found with ID: " + id));
+                        -> new DataNotFoundException("Product not found with ID: " + id));
+    }
+
+    private ProductSavedDto saveAndMapSaveDto(Product product) {
+        return productMapper.toSaveDto(productRepository.save(product));
     }
 }

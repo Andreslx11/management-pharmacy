@@ -10,6 +10,7 @@ import com.example.managementpharmacy.shared.exception.DataNotFoundException;
 import com.example.managementpharmacy.shared.page.PageResponse;
 import com.example.managementpharmacy.shared.page.PagingAndSortingBuilder;
 import com.example.managementpharmacy.shared.state.enums.State;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,18 +43,20 @@ public class SupplierServiceImpl extends PagingAndSortingBuilder implements Supp
 
     @Override
     public SupplierDto findById(Long id) throws DataNotFoundException {
-        return  supplierMapper.toDto(getSupplierById(id));
+        return supplierMapper.toDto(getSupplierById(id));
     }
 
+    @Transactional
     @Override
     public SupplierSavedDto create(SupplierBodyDto supplierBodyDto) {
-       Supplier supplier = supplierMapper.toEntity(supplierBodyDto);
-       supplier.setCreationDate(LocalDate.now());
-       supplier.setState(State.ENABLED);
-       supplier.setUrlkey(buildSlugsKeywords(supplierBodyDto.getCompanyName()));
-        return supplierMapper.toSaveDto(supplierRepository.save(supplier));
+        Supplier supplier = supplierMapper.toEntity(supplierBodyDto);
+        supplier.setCreationDate(LocalDate.now());
+        supplier.setState(State.ENABLED);
+        supplier.setUrlkey(buildSlugsKeywords(supplierBodyDto.getCompanyName()));
+        return saveAndMapSaveDto(supplier);
     }
 
+    @Transactional
     @Override
     public SupplierSavedDto update(Long id, SupplierBodyDto supplierBodyDto) throws DataNotFoundException {
         Supplier supplier = getSupplierById(id);
@@ -61,14 +64,15 @@ public class SupplierServiceImpl extends PagingAndSortingBuilder implements Supp
         supplier.setUrlkey(buildSlugsKeywords(supplier.getCompanyName()));
         supplier.setUpdateDate(LocalDate.now());
 
-        return supplierMapper.toSaveDto(supplierRepository.save(supplier));
+        return saveAndMapSaveDto(supplier);
     }
 
+    @Transactional
     @Override
     public SupplierSavedDto disable(Long id) throws DataNotFoundException {
         Supplier supplier = getSupplierById(id);
         supplier.setState(State.DISABLED);
-        return supplierMapper.toSaveDto(supplierRepository.save(supplier));
+        return saveAndMapSaveDto(supplier);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class SupplierServiceImpl extends PagingAndSortingBuilder implements Supp
     }
 
     @Override
-    public List<SupplierSmallDto> findAllByFilters( String name,String state) {
+    public List<SupplierSmallDto> findAllByFilters(String name, String state) {
         List<Supplier> suppliers = supplierRepository.findAllByFilters(name, state);
         return suppliers.stream()
                 .map(supplierMapper::toSmallDto)
@@ -99,7 +103,7 @@ public class SupplierServiceImpl extends PagingAndSortingBuilder implements Supp
     @Override
     public PageResponse<SupplierDto> findAllPaginated(int page, int size) {
         // variables
-        Pageable   pageable = PageRequest.of(page -1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
 
         // process
         // Get the total number of pages available from the product repository
@@ -113,30 +117,33 @@ public class SupplierServiceImpl extends PagingAndSortingBuilder implements Supp
     @Override
     public PageResponse<SupplierDto> paginatedSearch(SupplierFilterDto filter) {
         // variables
-          String column = SupplierSortField.getSqlColumn(filter.getSortField());
-          Pageable pageable = buildPageable(filter, column);
+        String column = SupplierSortField.getSqlColumn(filter.getSortField());
+        Pageable pageable = buildPageable(filter, column);
 
         // process
-       Page<Supplier> supplierPage = supplierRepository.paginatedSearch(
-               filter.getCompanyName(),
-               filter.getContact(),
-               filter.getPhone(),
-               filter.getEmail(),
-               filter.getNit(),
-               filter.getState().getValue(),
-               filter.getCreationDateFrom(),
-               filter.getCreationDateTo(),
-               pageable);
+        Page<Supplier> supplierPage = supplierRepository.paginatedSearch(
+                filter.getCompanyName(),
+                filter.getContact(),
+                filter.getPhone(),
+                filter.getEmail(),
+                filter.getNit(),
+                filter.getState().getValue(),
+                filter.getCreationDateFrom(),
+                filter.getCreationDateTo(),
+                pageable);
 
 
         // result
         return buildPageResponse(supplierPage, supplierMapper::toDto);
     }
 
+    public Supplier getSupplierById(Long id) {
+        return supplierRepository.findById(id)
+                .orElseThrow(() ->
+                        new DataNotFoundException("Supplier not found by id:  " + id));
+    }
 
-    public Supplier getSupplierById(Long id){
-       return supplierRepository.findById(id)
-               .orElseThrow(() ->
-                       new DataNotFoundException("Supplier not found by id:  "  + id));
+    private SupplierSavedDto saveAndMapSaveDto(Supplier supplier) {
+        return supplierMapper.toSaveDto(supplierRepository.save(supplier));
     }
 }
