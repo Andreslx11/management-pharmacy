@@ -1,6 +1,6 @@
 package com.example.managementpharmacy.application.dto.employee;
 
-import com.example.managementpharmacy.persistence.entity.RoleEntity;
+
 import com.example.managementpharmacy.persistence.enums.entity.DocumentType;
 import com.example.managementpharmacy.shared.util.Create;
 import jakarta.validation.constraints.Email;
@@ -40,8 +40,8 @@ public class EmployeeBodyDto {
     @Email(message = "Email should be valid")
     private String email;
 
-    @NotNull(message = "Role cannot be null", groups = { Create.class})
-    private RoleEntity role;
+    @NotNull(message = "Role id cannot be null", groups = { Create.class})
+    private Long roleId;
 
     @NotNull(message = "Contract start date is required", groups = { Create.class})
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Date format must be yyyy-MM-dd")
