@@ -1,11 +1,13 @@
 package com.example.managementpharmacy.persistence.entity;
 
-
 import com.example.managementpharmacy.persistence.enums.entity.DocumentType;
 import com.example.managementpharmacy.shared.state.converter.StateConverter;
 import com.example.managementpharmacy.shared.state.enums.State;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -68,7 +70,6 @@ public class Employee implements Serializable {
 
     @Convert(converter = StateConverter.class)
     private State state;
-
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
