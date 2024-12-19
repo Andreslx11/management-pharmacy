@@ -38,7 +38,7 @@ public class Customer implements Serializable {
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "document_type")
+    @Column(name = "identity_document_type")
     private DocumentType documentType;
 
     @Column(name = "document_number", unique = true, nullable = false)

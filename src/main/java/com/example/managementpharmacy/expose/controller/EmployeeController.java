@@ -80,7 +80,7 @@ public class EmployeeController {
 
     }
 
-    @ApiResponse(responseCode = StatusCode.OK, description = "Product employee")
+    @ApiResponse(responseCode = StatusCode.OK, description = "Employee  updated")
     @ApiResponse(
             responseCode = StatusCode.NOT_FOUND,
             description = "Employee not found",

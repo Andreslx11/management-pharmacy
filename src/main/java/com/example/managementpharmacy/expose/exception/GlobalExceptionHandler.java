@@ -33,7 +33,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<GeneralError> handlerTypeMismatch(MethodArgumentTypeMismatchException exception){
+    public ResponseEntity<GeneralError> handlerTypeMismatch(
+                                                            MethodArgumentTypeMismatchException exception){
         String message =  String.format("The value '%s' is not valid for the parameter '%s'.",
                 exception.getValue(), exception.getName());
         logger.warn("Type mismatch  exception occurred: {}", message);
@@ -43,7 +44,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ArgumentNotValidError>  handlerArgumentNotValidError(MethodArgumentNotValidException exception){
+    public ResponseEntity<ArgumentNotValidError>  handlerArgumentNotValidError(
+                                                                MethodArgumentNotValidException exception){
         logger.info("Validation occurred exception");
         Map<String, String> errors = new HashMap<>();
         exception.getBindingResult().getFieldErrors().forEach( error ->
@@ -54,7 +56,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<GeneralError> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+    public ResponseEntity<GeneralError> handleDataIntegrityViolationException(
+                                                                DataIntegrityViolationException exception) {
 
         logger.error("Data integrity violation exception occurred: {}", exception.getMessage());
 
@@ -73,15 +76,24 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(BusinessRuleViolationException.class)
-    public ResponseEntity<GeneralError>  handleUserAlreadyExists(BusinessRuleViolationException exception){
+    public ResponseEntity<GeneralError>  handleUserAlreadyExists(
+                                                               BusinessRuleViolationException exception){
         logger.warn("Business rule violation: {}", exception.getMessage());
         return getGeneralErrorResponseEntity(exception);
     }
 
     @ExceptionHandler(AuthenticationUserException.class)
-    public ResponseEntity<GeneralError> handleAuthenticationUserException(AuthenticationUserException exception){
+    public ResponseEntity<GeneralError> handleAuthenticationUserException(
+                                                                AuthenticationUserException exception){
         logger.warn("Authentication user exception occurred: {}", exception.getMessage());
         return getGeneralErrorResponseEntity(exception);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<GeneralError> handleIllegalArgumentException(IllegalArgumentException ex) {
+        logger.warn("Illegal argument exception occurred: {}", ex.getMessage());
+        GeneralError errorResponse = new GeneralError(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     private <T extends Exception>  ResponseEntity<GeneralError> getGeneralErrorResponseEntity(T exception) {
@@ -89,5 +101,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(errorResponse);
     }
+
 
 }
